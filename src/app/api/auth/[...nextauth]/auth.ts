@@ -1,5 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GithubProvider from 'next-auth/providers/github';
+
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prismadb';
 import bcrypt from 'bcrypt';
@@ -16,6 +18,10 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
   },
   providers: [
+    GithubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB__CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -37,13 +43,14 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const validePassword = await bcrypt.compare(
-          credentials.password,
-          existingUser.password
-        );
-
-        if (!validePassword) {
-          return null;
+        if (existingUser.password) {
+          const validePassword = await bcrypt.compare(
+            credentials.password,
+            existingUser.password
+          );
+          if (!validePassword) {
+            return null;
+          }
         }
 
         return {

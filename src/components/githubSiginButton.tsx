@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { Button } from './ui/button';
+import { signIn } from 'next-auth/react';
 
 interface GithunSignInButtonProps {
   children: React.ReactNode;
@@ -9,7 +10,9 @@ interface GithunSignInButtonProps {
 
 const GithubSignInButton: FC<GithunSignInButtonProps> = ({ children }) => {
   const loginWithGithub = () => {
-    console.log('login with github');
+    signIn('github', {
+      callbackUrl: 'http://localhost:3000/admin',
+    });
   };
 
   return (
