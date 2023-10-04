@@ -51,6 +51,7 @@ const LoginForm = () => {
       console.log(loginData.error);
     } else {
       router.push('/admin');
+      router.refresh();
     }
   };
 
